@@ -1,2 +1,2 @@
-# plugin-template
-A template for building Discord++ plugins
+# plugin-objects
+A objects for building Discord++ plugins
