@@ -2,9 +2,9 @@
 
 namespace discordpp {
 template <class BASE> class PluginObjects : public BASE, virtual BotStruct {
+};
 #define OBJECT_BREAKOUTS
-#define Bot PluginObjects
-/*
+//#define Bot PluginObjects
 #include "categories/application-commands.hh"
 #include "categories/audit-log.hh"
 #include "categories/channel.hh"
@@ -19,8 +19,6 @@ template <class BASE> class PluginObjects : public BASE, virtual BotStruct {
 #include "categories/user.hh"
 #include "categories/voice.hh"
 #include "categories/webhook.hh"
-*/
-#undef Bot
+//#undef Bot
 #undef OBJECT_BREAKOUTS
-};
 } // namespace discordpp
