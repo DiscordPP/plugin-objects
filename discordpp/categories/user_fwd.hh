@@ -13,4 +13,5 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-#include "../field.hh"
+class User;
+using Connection = json;

@@ -1,5 +1,5 @@
 //
-// Created by Aidan on 4/20/2021.
+// Created by Aidan on 3/11/2021.
 //
 
 // Howdy! This file contains unverified endpoints so they may need touching up.
@@ -13,4 +13,4 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-#include "../field.hh"
+class Emoji;

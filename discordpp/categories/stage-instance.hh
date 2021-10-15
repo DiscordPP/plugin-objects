@@ -12,3 +12,7 @@
 #ifndef OBJECT_BREAKOUTS
 #error This header should only be included in plugin-objects.hh
 #endif
+
+#include "../field.hh"
+
+using StageInstance = json;

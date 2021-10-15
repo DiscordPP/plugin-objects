@@ -13,4 +13,14 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-#include "../field.hh"
+using Guild = json;
+using UnavailableGuild = json;
+using GuildPreview = json;
+using GuildWidget = json;
+using GuildMember = json;
+using Integration = json;
+using IntegrationAccount = json;
+using IntegrationApplication = json;
+using Ban = json;
+using WelcomeScreen = json;
+using MembershipScreening = json;

@@ -1,5 +1,5 @@
 //
-// Created by Aidan on 4/20/2021.
+// Created by Aidan on 3/11/2021.
 //
 
 // Howdy! This file contains unverified endpoints so they may need touching up.
@@ -13,4 +13,16 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-#include "../field.hh"
+using Channel = json;
+class Message;
+using MessageActivity = json;
+using MessageReference = json;
+using FollowedChannel = json;
+using Reaction = json;
+using Overwrite = json;
+using ThreadMetadata = json;
+using ThreadMember = json;
+using Embed = json;
+using Attachment = json;
+using ChannelMention = json;
+using AllowedMentions = json;

@@ -13,5 +13,36 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using NewEmoji = json;
-using Emoji = json;
+#include "../field.hh"
+
+class User;
+
+class Emoji {
+  public:
+    Emoji() = default;
+
+    Emoji(nullable_field<Snowflake> id,
+          nullable_field<std::string> name,
+          omittable_field<std::vector<Snowflake>> roles,
+          omittable_field<User> user,
+          omittable_field<bool> requireColons,
+          omittable_field<bool> managed,
+          omittable_field<bool> animated,
+          omittable_field<bool> available)
+        : id(std::move(id)), name(std::move(name)), roles(std::move(roles)), user(std::move(user)),
+          require_colons(std::move(requireColons)), managed(std::move(managed)), animated(std::move(animated)),
+          available(std::move(available)) {}
+
+    nullable_field<Snowflake> id;
+    nullable_field<std::string> name;
+    omittable_field<std::vector<Snowflake>> roles;
+    omittable_field<User> user;
+    omittable_field<bool> require_colons;
+    omittable_field<bool> managed;
+    omittable_field<bool> animated;
+    omittable_field<bool> available;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Emoji, id, name, roles, user,
+                                         require_colons, managed, animated,
+                                         available)
+};
