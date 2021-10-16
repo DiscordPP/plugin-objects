@@ -15,47 +15,46 @@
 
 #include "../field.hh"
 
+class Channel {
+  public:
+    field<Snowflake> id;
+    field<int> type;
+    omittable_field<Snowflake> guild_id;
+    omittable_field<int> position;
+    omittable_field<std::vector<Overwrite>> permission_overwrites;
+    omittable_field<std::string> name;
+    nullable_omittable_field<std::string> topic;
+    omittable_field<bool> nsfw;
+    nullable_omittable_field<Snowflake> last_message_id;
+    omittable_field<int> bitrate;
+    omittable_field<int> user_limit;
+    omittable_field<int> rate_limit_per_user;
+    omittable_field<std::vector<User>> recipients;
+    nullable_omittable_field<std::string> icon;
+    omittable_field<Snowflake> owner_id;
+    omittable_field<Snowflake> application_id;
+    nullable_omittable_field<Snowflake> parent_id;
+    nullable_omittable_field<Timestamp> last_pin_timestamp;
+    nullable_omittable_field<std::string> rtc_region;
+    omittable_field<int> video_quality_mode;
+    omittable_field<int> message_count;
+    omittable_field<int> member_count;
+    omittable_field<ThreadMetadata> thread_metadata;
+    omittable_field<ThreadMember> member;
+    omittable_field<int> default_auto_archive_duration;
+    omittable_field<std::string> permissions;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(
+        Channel, {}, {}, id, type, guild_id, position, permission_overwrites,
+        name, topic, nsfw, last_message_id, bitrate, user_limit,
+        rate_limit_per_user, recipients, icon, owner_id, application_id,
+        parent_id, last_pin_timestamp, rtc_region, video_quality_mode,
+        message_count, member_count, thread_metadata, member,
+        default_auto_archive_duration, permissions)
+};
+
 class Message {
   public:
-    Message() = default;
-
-    enum Type : int {
-        DEFAULT = 0,
-        RECIPIENT_ADD = 1,
-        RECIPIENT_REMOVE = 2,
-        CALL = 3,
-        CHANNEL_NAME_CHANGE = 4,
-        CHANNEL_ICON_CHANGE = 5,
-        CHANNEL_PINNED_MESSAGE = 6,
-        GUILD_MEMBER_JOIN = 7,
-        USER_PREMIUM_GUILD_SUBSCRIPTION = 8,
-        USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1 = 9,
-        USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2 = 10,
-        USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3 = 11,
-        CHANNEL_FOLLOW_ADD = 12,
-        GUILD_DISCOVERY_DISQUALIFIED = 14,
-        GUILD_DISCOVERY_REQUALIFIED = 15,
-        GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING = 16,
-        GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING = 17,
-        THREAD_CREATED = 18,
-        REPLY = 19,
-        CHAT_INPUT_COMMAND = 20,
-        THREAD_STARTER_MESSAGE = 21,
-        GUILD_INVITE_REMINDER = 22,
-        CONTEXT_MENU_COMMAND = 23
-    };
-
-    enum Flag : int {
-        CROSSPOSTED = 1 << 0,
-        IS_CROSSPOST = 1 << 1,
-        SUPPRESS_EMBEDS = 1 << 2,
-        SOURCE_MESSAGE_DELETED = 1 << 3,
-        URGENT = 1 << 4,
-        HAS_THREAD = 1 << 5,
-        EPHEMERAL = 1 << 6,
-        LOADING = 1 << 7
-    };
-
     field<Snowflake> id;
     field<Snowflake> channel_id;
     omittable_field<Snowflake> guild_id;
@@ -75,12 +74,12 @@ class Message {
     omittable_field<std::variant<int, std::string>> nonce;
     field<bool> pinned;
     omittable_field<Snowflake> webhook_id;
-    field<Type> type;
+    field<MessageType> type;
     omittable_field<MessageActivity> activity;
     omittable_field<Application> application;
     omittable_field<Snowflake> application_id;
     nullable_omittable_field<MessageReference> message_reference;
-    omittable_field<Flag> flags;
+    omittable_field<MessageFlags> flags;
     omittable_field<MessageReference> referenced_message;
     omittable_field<MessageInteraction> interaction;
     omittable_field<Channel> thread;
@@ -88,10 +87,222 @@ class Message {
     omittable_field<std::vector<StickerItem>> sticker_items;
 
     NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(
-        Message, id, channel_id, guild_id, author, member, content, timestamp,
-        edited_timestamp, tts, mention_everyone, mentions, mention_roles,
-        mention_channels, attachments, embeds, reactions, nonce, pinned,
-        webhook_id, type, activity, application, application_id,
+        Message, {}, {}, id, channel_id, guild_id, author, member, content,
+        timestamp, edited_timestamp, tts, mention_everyone, mentions,
+        mention_roles, mention_channels, attachments, embeds, reactions, nonce,
+        pinned, webhook_id, type, activity, application, application_id,
         message_reference, flags, referenced_message, interaction, thread,
         components, sticker_items)
+};
+
+class MessageActivity {
+  public:
+    field<MessageActivityType> type;
+    omittable_field<std::string> party_id;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(MessageActivity, {}, {}, type,
+                                         party_id)
+};
+
+class MessageReference {
+  public:
+    omittable_field<Snowflake> message_id;
+    omittable_field<Snowflake> channel_id;
+    omittable_field<Snowflake> guild_id;
+    omittable_field<bool> fail_if_not_exists;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(MessageReference, {}, {}, message_id,
+                                         channel_id, guild_id,
+                                         fail_if_not_exists)
+};
+
+class FollowedChannel {
+  public:
+    field<Snowflake> channel_id;
+    field<Snowflake> webhook_id;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(FollowedChannel, {}, {}, channel_id,
+                                         webhook_id)
+};
+
+class Reaction {
+  public:
+    field<int> count;
+    field<bool> me;
+    field<Emoji> emoji;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Reaction, {}, {}, count, me, emoji)
+};
+
+class Overwrite {
+  public:
+    field<Snowflake> id;
+    field<int> type;
+    field<std::string> allow;
+    field<std::string> deny;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Overwrite, {}, {}, id, type, allow,
+                                         deny)
+};
+
+class ThreadMetadata {
+  public:
+    field<bool> archived;
+    field<int> auto_archive_duration;
+    field<Timestamp> archive_timestamp;
+    field<bool> locked;
+    omittable_field<bool> invitable;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(ThreadMetadata, {}, {}, archived,
+                                         auto_archive_duration,
+                                         archive_timestamp, locked, invitable)
+};
+
+class ThreadMember {
+  public:
+    omittable_field<Snowflake> id;
+    omittable_field<Snowflake> user_id;
+    field<Timestamp> join_timestamp;
+    field<int> flags;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(ThreadMember, {}, {}, id, user_id,
+                                         join_timestamp, flags)
+};
+
+class Embed {
+  public:
+    omittable_field<std::string> title;
+    omittable_field<EmbedType> type;
+    omittable_field<std::string> description;
+    omittable_field<std::string> url;
+    omittable_field<Timestamp> timestamp;
+    omittable_field<int> color;
+    omittable_field<EmbedFooter> footer;
+    omittable_field<EmbedImage> image;
+    omittable_field<EmbedThumbnail> thumbnail;
+    omittable_field<EmbedVideo> video;
+    omittable_field<EmbedProvider> provider;
+    omittable_field<EmbedAuthor> author;
+    omittable_field<std::vector<EmbedField>> fields;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Embed, {}, {}, title, type,
+                                         description, url, timestamp, color,
+                                         footer, image, thumbnail, video,
+                                         provider, author, fields)
+};
+
+class EmbedThumbnail {
+  public:
+    field<std::string> url;
+    omittable_field<std::string> proxy_url;
+    omittable_field<int> height;
+    omittable_field<int> width;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(EmbedThumbnail, {}, {}, url, proxy_url,
+                                         height, width)
+};
+
+class EmbedVideo {
+  public:
+    omittable_field<std::string> url;
+    omittable_field<std::string> proxy_url;
+    omittable_field<int> height;
+    omittable_field<int> width;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(EmbedVideo, {}, {}, url, proxy_url,
+                                         height, width)
+};
+
+class EmbedImage {
+  public:
+    field<std::string> url;
+    omittable_field<std::string> proxy_url;
+    omittable_field<int> height;
+    omittable_field<int> width;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(EmbedImage, {}, {}, url, proxy_url,
+                                         height, width)
+};
+
+class EmbedProvider {
+  public:
+    omittable_field<std::string> name;
+    omittable_field<std::string> url;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(EmbedProvider, {}, {}, name, url)
+};
+class EmbedAuthor {
+  public:
+    field<std::string> name;
+    omittable_field<std::string> url;
+    omittable_field<std::string> icon_url;
+    omittable_field<std::string> proxy_icon_url;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(EmbedAuthor, {}, {}, name, url,
+                                         icon_url, proxy_icon_url)
+};
+
+class EmbedFooter {
+  public:
+    field<std::string> text;
+    omittable_field<std::string> icon_url;
+    omittable_field<std::string> proxy_icon_url;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(EmbedFooter, {}, {}, text, icon_url,
+                                         proxy_icon_url)
+};
+
+class EmbedField {
+  public:
+    field<std::string> name;
+    field<std::string> value;
+    omittable_field<bool> display_inline;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(
+        EmbedField,
+        {
+            if (!t.display_inline.is_omitted()) {
+                j["inline"] = t.display_inline;
+            }
+        },
+        { j.at("inline").get_to(t.display_inline); }, name, value)
+};
+
+class Attachment {
+  public:
+    field<Snowflake> id;
+    field<std::string> filename;
+    omittable_field<std::string> content_type;
+    field<int> size;
+    field<std::string> url;
+    field<std::string> proxy_url;
+    nullable_omittable_field<int> height;
+    nullable_omittable_field<int> width;
+    omittable_field<bool> ephemeral;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Attachment, {}, {}, id, filename,
+                                         content_type, size, url, proxy_url,
+                                         height, width, ephemeral)
+};
+
+class ChannelMention {
+  public:
+    field<Snowflake> id;
+    field<Snowflake> guild_id;
+    field<ChannelType> type;
+    field<std::string> name;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(ChannelMention, {}, {}, id, guild_id,
+                                         type, name)
+};
+
+class AllowedMentions {
+  public:
+    field<std::vector<AllowedMentionType>> parse;
+    field<std::vector<Snowflake>> roles;
+    field<std::vector<Snowflake>> users;
+    field<bool> replied_user;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(AllowedMentions, {}, {}, parse, roles,
+                                         users, replied_user)
 };

@@ -13,4 +13,4 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-class Application;
+#include "../field.hh"

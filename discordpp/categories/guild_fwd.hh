@@ -13,9 +13,9 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using Guild = json;
-using UnavailableGuild = json;
-using GuildPreview = json;
+class Guild;
+class UnavailableGuild;
+class GuildPreview;
 using GuildWidget = json;
 using GuildMember = json;
 using Integration = json;

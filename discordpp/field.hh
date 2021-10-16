@@ -8,6 +8,9 @@ struct nulled_t {};
 inline static const nulled_t nulled;
 struct omitted_t {};
 inline static const omitted_t omitted;
+struct uninitialized_t {};
+inline static const uninitialized_t uninitialized;
+
 template <typename T> class field {
   protected:
     enum state { uninitialized_e, present_e, omitted_e, nulled_e };
@@ -19,8 +22,9 @@ template <typename T> class field {
 
   public:
     field() : t_(nullptr), s_(uninitialized_e) {}
+    field(uninitialized_t) : t_(nullptr), s_(uninitialized_e) {}
     field(const T &t) : t_(std::make_unique<T>(t)), s_(present_e) {}
-    field(const field<T>& f) : t_(std::make_unique<T>(*f.t_)), s_(f.s_) {}
+    field(const field<T> &f) : t_(std::make_unique<T>(*f.t_)), s_(f.s_) {}
     /*field(std::initializer_list<T> &t)
         : t_(std::make_unique<T>(*t.begin())), s_(present_e) {
         assert(t.size() == 1);
@@ -45,6 +49,7 @@ template <typename T> class field {
         return *this;
     }
 
+    [[nodiscard]] bool is_uninitialized() const { return s_ == uninitialized_e; }
     [[nodiscard]] bool is_present() const { return s_ == present_e; }
     [[nodiscard]] bool is_omitted() const { return s_ == omitted_e; }
     [[nodiscard]] bool is_null() const { return s_ == nulled_e; }
@@ -56,7 +61,12 @@ template <typename T> class field {
                 "You can't convert an uninitialized field to JSON");
             break;
         case present_e:
+            // if constexpr (std::is_enum_v<T>) {
+            //     j = static_cast<typename
+            //     std::underlying_type<T>::type>(*f.t_);
+            // } else {
             j = *f.t_;
+            //}
             break;
         case nulled_e:
             j = nullptr;
@@ -81,6 +91,8 @@ template <typename T> class nullable_field : public field<T> {
   public:
     nullable_field() : field<T>(nullptr, field<T>::uninitialized_e) {}
     nullable_field(const T &t) : field<T>(t) {}
+    nullable_field(uninitialized_t)
+        : field<T>(nullptr, field<T>::uninitialized_e) {}
     nullable_field(nulled_t) : field<T>(nullptr, field<T>::nulled_e) {}
     nullable_field(std::nullptr_t) : field<T>(nullptr, field<T>::nulled_e) {}
     virtual nullable_field &operator=(nulled_t) {
@@ -98,6 +110,8 @@ template <typename T> class omittable_field : public field<T> {
   public:
     omittable_field() : field<T>(nullptr, field<T>::omitted_e) {}
     omittable_field(const T &t) : field<T>(t) {}
+    omittable_field(uninitialized_t)
+        : field<T>(nullptr, field<T>::uninitialized_e) {}
     omittable_field(omitted_t) : field<T>(nullptr, field<T>::omitted_e) {}
     virtual omittable_field &operator=(omitted_t) {
         field<T>::t_ = nullptr;
@@ -109,6 +123,8 @@ template <typename T> class nullable_omittable_field : public field<T> {
   public:
     nullable_omittable_field() : field<T>(nullptr, field<T>::omitted_e) {}
     nullable_omittable_field(const T &t) : field<T>(t) {}
+    nullable_omittable_field(uninitialized_t)
+        : field<T>(nullptr, field<T>::uninitialized_e) {}
     nullable_omittable_field(nulled_t)
         : field<T>(nullptr, field<T>::nulled_e) {}
     nullable_omittable_field(std::nullptr_t)
@@ -138,26 +154,35 @@ template <typename T> class nullable_omittable_field : public field<T> {
     }
 #define NLOHMANN_JSON_FROM_FIELD(v1) NLOHMANN_JSON_FROM(v1)
 
-#define NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Type, ...)                        \
+#define NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Type, ToExtra, FromExtra, ...)    \
     friend void to_json(nlohmann::json &nlohmann_json_j,                       \
                         const Type &nlohmann_json_t) {                         \
+        auto &j = nlohmann_json_j;                                             \
+        const auto &t = nlohmann_json_t;                                       \
+        ToExtra;                                                               \
         NLOHMANN_JSON_EXPAND(                                                  \
-            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO_FIELD, __VA_ARGS__))          \
+            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO_FIELD, __VA_ARGS__));         \
     }                                                                          \
     friend void from_json(const nlohmann::json &nlohmann_json_j,               \
                           Type &nlohmann_json_t) {                             \
+        const auto &j = nlohmann_json_j;                                             \
+        auto &t = nlohmann_json_t;                                       \
+        FromExtra;                                                             \
         NLOHMANN_JSON_EXPAND(                                                  \
-            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_FIELD, __VA_ARGS__))        \
+            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_FIELD, __VA_ARGS__));       \
     }
 
-#define NLOHMANN_DEFINE_FIELD_TYPE_NON_INTRUSIVE(Type, ...)                    \
+#define NLOHMANN_DEFINE_FIELD_TYPE_NON_INTRUSIVE(Type, ToExtra, FromExtra,     \
+                                                 ...)                          \
     inline void to_json(nlohmann::json &nlohmann_json_j,                       \
                         const Type &nlohmann_json_t) {                         \
+        ToExtra;                                                               \
         NLOHMANN_JSON_EXPAND(                                                  \
-            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO_FIELD, __VA_ARGS__))          \
+            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_TO_FIELD, __VA_ARGS__));         \
     }                                                                          \
     inline void from_json(const nlohmann::json &nlohmann_json_j,               \
                           Type &nlohmann_json_t) {                             \
+        FromExtra;                                                             \
         NLOHMANN_JSON_EXPAND(                                                  \
-            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_FIELD, __VA_ARGS__))        \
+            NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_FIELD, __VA_ARGS__));       \
     }

@@ -15,18 +15,6 @@
 
 #include "../field.hh"
 
-using SelectOptions = json;
-
-enum ButtonStyle : int {
-    PRIMARY = 1,
-    SECONDARY = 2,
-    SUCCESS = 3,
-    DANGER = 4,
-    LINK = 5
-};
-
-enum ComponentType : int { ACTIONROW = 1, BUTTON = 2, SELECTMENU = 3 };
-
 class Component {
   public:
     Component() = default;
@@ -36,7 +24,7 @@ class Component {
               omittable_field<ButtonStyle> style,
               omittable_field<std::string> label, omittable_field<Emoji> emoji,
               omittable_field<std::string> url,
-              omittable_field<std::vector<SelectOptions>> options,
+              omittable_field<std::vector<SelectOption>> options,
               omittable_field<std::string> placeholder,
               omittable_field<int> minValues, omittable_field<int> maxValues,
               omittable_field<std::vector<Component>> components)
@@ -54,16 +42,16 @@ class Component {
     omittable_field<std::string> label;
     omittable_field<Emoji> emoji;
     omittable_field<std::string> url;
-    omittable_field<std::vector<SelectOptions>> options;
+    omittable_field<std::vector<SelectOption>> options;
     omittable_field<std::string> placeholder;
     omittable_field<int> min_values;
     omittable_field<int> max_values;
     omittable_field<std::vector<Component>> components;
 
-    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Component, type, custom_id, disabled,
-                                         style, label, emoji, url, options,
-                                         placeholder, min_values, max_values,
-                                         components)
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Component, {}, {}, type, custom_id,
+                                         disabled, style, label, emoji, url,
+                                         options, placeholder, min_values,
+                                         max_values, components)
 };
 
 class Button : public Component {
@@ -75,13 +63,20 @@ class Button : public Component {
     using Component::type;
 
   public:
+    Button()
+        : Component(ComponentType::BUTTON, uninitialized, uninitialized,
+                    uninitialized, uninitialized, uninitialized, uninitialized,
+                    omitted, omitted, omitted, omitted, omitted) {}
+
     Button(omittable_field<std::string> customId,
            omittable_field<bool> disabled, omittable_field<ButtonStyle> style,
            omittable_field<std::string> label, omittable_field<Emoji> emoji,
            omittable_field<std::string> url,
            omittable_field<std::vector<Component>> components)
-        : Component(BUTTON, customId, disabled, style, label, emoji, url,
-                    omitted, omitted, omitted, omitted, omitted) {}
+        : Component(ComponentType::BUTTON, customId, disabled, style, label,
+                    emoji, url, omitted, omitted, omitted, omitted, omitted) {}
+
+    const field<ComponentType> &type = Component::type;
 };
 
 class SelectMenu : public Component {
@@ -91,14 +86,21 @@ class SelectMenu : public Component {
     using Component::url;
 
   public:
+    SelectMenu()
+        : Component(ComponentType::SELECTMENU, uninitialized, uninitialized,
+                    omitted, omitted, omitted, omitted, uninitialized,
+                    uninitialized, uninitialized, uninitialized, omitted) {}
+
     SelectMenu(omittable_field<std::string> customId,
                omittable_field<bool> disabled,
-               std::vector<SelectOptions> options,
+               std::vector<SelectOption> options,
                omittable_field<std::string> placeholder,
                omittable_field<int> minValues, omittable_field<int> maxValues)
-        : Component(SELECTMENU, customId, disabled, omitted, omitted, omitted,
-                    omitted, options, placeholder, minValues, maxValues,
-                    omitted) {}
+        : Component(ComponentType::SELECTMENU, customId, disabled, omitted,
+                    omitted, omitted, omitted, options, placeholder, minValues,
+                    maxValues, omitted) {}
+
+    const field<ComponentType> &type = Component::type;
 };
 
 class ActionRow : public Component {
@@ -114,7 +116,34 @@ class ActionRow : public Component {
     using Component::url;
 
   public:
+    ActionRow()
+        : Component(ComponentType::ACTIONROW, omitted, omitted, omitted,
+                    omitted, omitted, omitted, omitted, omitted, omitted,
+                    omitted, uninitialized) {}
+
     ActionRow(omittable_field<std::vector<Component>> components)
-        : Component(ACTIONROW, omitted, omitted, omitted, omitted, omitted,
-                    omitted, omitted, omitted, omitted, omitted, components) {}
+        : Component(ComponentType::ACTIONROW, omitted, omitted, omitted,
+                    omitted, omitted, omitted, omitted, omitted, omitted,
+                    omitted, components) {}
+
+    const field<ComponentType> &type = Component::type;
+};
+
+class SelectOption {
+  public:
+    field<std::string> label;
+    field<std::string> value;
+    omittable_field<std::string> description;
+    omittable_field<Emoji> emoji;
+    omittable_field<bool> default_selection;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(
+        SelectOption,
+        {
+            if (!t.default_selection.is_omitted()) {
+                j["default"] = t.default_selection;
+            }
+        },
+        { j.at("default").get_to(t.default_selection); }, label, value,
+        description, emoji)
 };

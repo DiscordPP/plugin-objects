@@ -13,16 +13,23 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using Channel = json;
+class Channel;
 class Message;
-using MessageActivity = json;
-using MessageReference = json;
-using FollowedChannel = json;
-using Reaction = json;
-using Overwrite = json;
-using ThreadMetadata = json;
-using ThreadMember = json;
-using Embed = json;
-using Attachment = json;
-using ChannelMention = json;
-using AllowedMentions = json;
+class MessageActivity;
+class MessageReference;
+class FollowedChannel;
+class Reaction;
+class Overwrite;
+class ThreadMetadata;
+class ThreadMember;
+class Embed;
+class EmbedThumbnail;
+class EmbedVideo;
+class EmbedImage;
+class EmbedProvider;
+class EmbedAuthor;
+class EmbedFooter;
+class EmbedField;
+class Attachment;
+class ChannelMention;
+class AllowedMentions;

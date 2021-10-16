@@ -13,6 +13,7 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using AuditLog = json;
-using AuditLogEntry = json;
-using AuditLogChange = json;
+class AuditLog;
+class AuditLogEntry;
+class OptionalAuditEntryInfo;
+class AuditLogChange;

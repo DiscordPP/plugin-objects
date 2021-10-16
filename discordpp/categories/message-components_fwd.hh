@@ -13,16 +13,8 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using SelectOptions = json;
-
-enum ButtonStyle : int;
-
-enum ComponentType : int;
-
 class Component;
-
 class Button;
-
 class SelectMenu;
-
 class ActionRow;
+class SelectOption;

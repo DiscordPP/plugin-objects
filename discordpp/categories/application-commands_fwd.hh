@@ -13,4 +13,9 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using ApplicationCommandPermissions = json;
+class ApplicationCommand;
+class ApplicationCommandOption;
+class ApplicationCommandOptionChoice;
+class ApplicationCommandInteractionDataOption;
+class GuildApplicationCommandPermissions;
+class ApplicationCommandPermission;

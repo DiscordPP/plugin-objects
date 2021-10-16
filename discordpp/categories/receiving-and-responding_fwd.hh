@@ -13,6 +13,9 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using Interaction = json;
-using MessageInteraction = json;
-using InteractionResponse = json;
+class Interaction;
+class InteractionData;
+class ResolvedData;
+class MessageInteraction;
+class InteractionResponse;
+class InteractionCallbackData;
