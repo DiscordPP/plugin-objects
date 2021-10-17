@@ -17,7 +17,7 @@ class Guild;
 class UnavailableGuild;
 class GuildPreview;
 using GuildWidget = json;
-using GuildMember = json;
+class GuildMember;
 using Integration = json;
 using IntegrationAccount = json;
 using IntegrationApplication = json;

@@ -8,7 +8,21 @@
 namespace discordpp {
 using json = nlohmann::json;
 
-template <class BASE> class PluginObjects : public BASE, virtual BotStruct {};
+template <class BASE> class PluginObjects : public BASE, virtual BotStruct {
+};
+
+template <typename T>
+inline handleEvent objectify(const std::function<void(const T t)>& func){
+    return [func](const json j){
+        func(j.get<T>());
+    };
+}
+template <typename T>
+inline handleRead objectify(const std::function<void(const bool error, const T t)>& func){
+    return [func](const bool e, const json j){
+        func(e, j.get<T>());
+    };
+}
 
 #define OBJECT_BREAKOUTS
 #include "macros/defineObjectUtil.hh"

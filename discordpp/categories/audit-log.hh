@@ -33,7 +33,7 @@ class AuditLogEntry {
     nullable_field<Snowflake> target_id;
     omittable_field<std::vector<AuditLogChange>> changes;
     nullable_field<Snowflake> user_id;
-    field<snowflake> id;
+    field<Snowflake> id;
     field<AuditLogEvent> action_type;
     omittable_field<OptionalAuditEntryInfo> options;
     omittable_field<std::string> reason;

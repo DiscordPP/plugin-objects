@@ -33,9 +33,9 @@ class User {
     omittable_field<int> premium_type;
     omittable_field<int> public_flags;
 
-    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(User, {}, {}, id, username, discriminator,
-                                         avatar, bot, system, mfa_enabled,
-                                         banner, accent_color, locale, verified,
-                                         email, flags, premium_type,
-                                         public_flags)
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(User, {}, {}, id, username,
+                                         discriminator, avatar, bot, system,
+                                         mfa_enabled, banner, accent_color,
+                                         locale, verified, email, flags,
+                                         premium_type, public_flags)
 };

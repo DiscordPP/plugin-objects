@@ -60,7 +60,6 @@ class Button : public Component {
     using Component::min_values;
     using Component::options;
     using Component::placeholder;
-    using Component::type;
 
   public:
     Button()

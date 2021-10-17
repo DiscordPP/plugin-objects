@@ -87,8 +87,8 @@ class UnavailableGuild {
     field<Snowflake> id;
     omittable_field<bool> unavailable;
 
-    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(
-        UnavailableGuild, {}, {}, id, unavailable)
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(UnavailableGuild, {}, {}, id,
+                                         unavailable)
 };
 
 class GuildPreview {
@@ -104,9 +104,28 @@ class GuildPreview {
     field<int> approximate_presence_count;
     nullable_field<std::string> description;
 
-    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(GuildPreview, {}, {}, id, name,
-                                         icon, splash, discovery_splash, emojis,
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(GuildPreview, {}, {}, id, name, icon,
+                                         splash, discovery_splash, emojis,
                                          features, approximate_member_count,
                                          approximate_presence_count,
                                          description)
+};
+
+class GuildMember {
+  public:
+    omittable_field<User> user;
+    nullable_omittable_field<std::string> nick;
+    nullable_omittable_field<std::string> avatar;
+    field<std::vector<Snowflake>> roles;
+    field<Timestamp> joined_at;
+    nullable_omittable_field<Timestamp> premium_since;
+    field<bool> deaf;
+    field<bool> mute;
+    omittable_field<bool> pending;
+    omittable_field<std::string> permissions;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(GuildMember, {}, {}, user, nick,
+                                         avatar, roles, joined_at,
+                                         premium_since, deaf, mute, pending,
+                                         permissions)
 };

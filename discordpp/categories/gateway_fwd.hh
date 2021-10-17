@@ -21,7 +21,7 @@ using GuildRequestMembers = json;
 using GatewayVoiceStateUpdate = json;
 using GatewayPresenceUpdate = json;
 using Hello = json;
-using Ready/*Event*/ = json;
+class Ready/*Event*/;
 using ChannelCreate/*Event*/ = Channel;
 using ChannelUpdate/*Event*/ = Channel;
 using ChannelDelete/*Event*/ = Channel;

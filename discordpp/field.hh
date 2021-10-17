@@ -24,19 +24,37 @@ template <typename T> class field {
     field() : t_(nullptr), s_(uninitialized_e) {}
     field(uninitialized_t) : t_(nullptr), s_(uninitialized_e) {}
     field(const T &t) : t_(std::make_unique<T>(t)), s_(present_e) {}
-    field(const field<T> &f) : t_(std::make_unique<T>(*f.t_)), s_(f.s_) {}
+    field(const field<T> &f)
+        : t_(f.t_ ? std::make_unique<T>(*f.t_) : nullptr), s_(f.s_) {}
     /*field(std::initializer_list<T> &t)
         : t_(std::make_unique<T>(*t.begin())), s_(present_e) {
         assert(t.size() == 1);
     }*/
 
     operator bool() const { return s_ == present_e; }
-    constexpr T operator->() { return **this; }
-    constexpr T operator*() {
+    T *operator->() {
         if (s_ != present_e) {
             throw std::logic_error("This field is not present.");
         }
         return &*t_;
+    }
+    const T *operator->() const {
+        if (s_ != present_e) {
+            throw std::logic_error("This field is not present.");
+        }
+        return &*t_;
+    }
+    T &operator*() {
+        if (s_ != present_e) {
+            throw std::logic_error("This field is not present.");
+        }
+        return *t_;
+    }
+    const T &operator*() const {
+        if (s_ != present_e) {
+            throw std::logic_error("This field is not present.");
+        }
+        return *t_;
     }
     field<T> &operator=(const T &t) {
         t_.reset(new T(t));
@@ -44,12 +62,14 @@ template <typename T> class field {
         return *this;
     }
     field<T> &operator=(const field<T> &f) {
-        t_.reset(new T(*f.t_));
+        t_.reset(f.t_ ? new T(*f.t_) : nullptr);
         s_ = present_e;
         return *this;
     }
 
-    [[nodiscard]] bool is_uninitialized() const { return s_ == uninitialized_e; }
+    [[nodiscard]] bool is_uninitialized() const {
+        return s_ == uninitialized_e;
+    }
     [[nodiscard]] bool is_present() const { return s_ == present_e; }
     [[nodiscard]] bool is_omitted() const { return s_ == omitted_e; }
     [[nodiscard]] bool is_null() const { return s_ == nulled_e; }
@@ -152,7 +172,10 @@ template <typename T> class nullable_omittable_field : public field<T> {
     if (!nlohmann_json_t.v1.is_omitted()) {                                    \
         NLOHMANN_JSON_TO(v1)                                                   \
     }
-#define NLOHMANN_JSON_FROM_FIELD(v1) NLOHMANN_JSON_FROM(v1)
+#define NLOHMANN_JSON_FROM_FIELD(v1)                                           \
+    if (nlohmann_json_j.contains(#v1)) {                                       \
+        NLOHMANN_JSON_FROM(v1)                                                 \
+    }
 
 #define NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Type, ToExtra, FromExtra, ...)    \
     friend void to_json(nlohmann::json &nlohmann_json_j,                       \
@@ -165,8 +188,8 @@ template <typename T> class nullable_omittable_field : public field<T> {
     }                                                                          \
     friend void from_json(const nlohmann::json &nlohmann_json_j,               \
                           Type &nlohmann_json_t) {                             \
-        const auto &j = nlohmann_json_j;                                             \
-        auto &t = nlohmann_json_t;                                       \
+        const auto &j = nlohmann_json_j;                                       \
+        auto &t = nlohmann_json_t;                                             \
         FromExtra;                                                             \
         NLOHMANN_JSON_EXPAND(                                                  \
             NLOHMANN_JSON_PASTE(NLOHMANN_JSON_FROM_FIELD, __VA_ARGS__));       \
