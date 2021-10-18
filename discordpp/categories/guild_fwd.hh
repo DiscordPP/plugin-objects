@@ -16,11 +16,12 @@
 class Guild;
 class UnavailableGuild;
 class GuildPreview;
-using GuildWidget = json;
+class GuildWidget;
 class GuildMember;
-using Integration = json;
-using IntegrationAccount = json;
-using IntegrationApplication = json;
-using Ban = json;
-using WelcomeScreen = json;
+class Integration;
+class IntegrationAccount;
+class IntegrationApplication;
+class Ban;
+class WelcomeScreen;
+class WelcomeScreenChannel;
 using MembershipScreening = json;

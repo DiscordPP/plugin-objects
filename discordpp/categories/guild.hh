@@ -111,6 +111,14 @@ class GuildPreview {
                                          description)
 };
 
+class GuildWidget {
+    field<bool> enabled;
+    nullable_field<Snowflake> channel_id;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(GuildWidget, {}, {}, enabled,
+                                         channel_id)
+};
+
 class GuildMember {
   public:
     omittable_field<User> user;
@@ -128,4 +136,79 @@ class GuildMember {
                                          avatar, roles, joined_at,
                                          premium_since, deaf, mute, pending,
                                          permissions)
+};
+
+class Integration {
+    field<Snowflake> id;
+    field<std::string> name;
+    field<std::string> type;
+    field<bool> enabled;
+    omittable_field<bool> syncing;
+    omittable_field<Snowflake> role_id;
+    omittable_field<bool> enable_emoticons;
+    omittable_field<IntegrationExpireBehavior> expire_behavior;
+    omittable_field<int> expire_grace_period;
+    omittable_field<User> user;
+    field<IntegrationAccount> account;
+    omittable_field<Timestamp> synced_at;
+    omittable_field<int> subscriber_count;
+    omittable_field<bool> revoked;
+    omittable_field<Application> application;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Integration, {}, {}, id, name, type,
+                                         enabled, syncing, role_id,
+                                         enable_emoticons, expire_behavior,
+                                         expire_grace_period, user, account,
+                                         synced_at, subscriber_count, revoked,
+                                         application)
+};
+
+class IntegrationAccount {
+  public:
+    field<std::string> id;
+    field<std::string> name;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(IntegrationAccount, {}, {}, id, name)
+};
+
+class IntegrationApplication {
+  public:
+    field<Snowflake> id;
+    field<std::string> name;
+    nullable_field<std::string> icon;
+    field<std::string> description;
+    field<std::string> summary;
+    omittable_field<User> bot;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(IntegrationApplication, {}, {}, id,
+                                         name, icon, description, summary, bot)
+};
+
+class Ban {
+  public:
+    nullable_field<std::string> reason;
+    field<User> user;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Ban, {}, {}, reason, user)
+};
+
+class WelcomeScreen {
+  public:
+    nullable_field<std::string> description;
+    field<std::vector<WelcomeScreenChannel>> welcome_channels;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(WelcomeScreen, {}, {}, description,
+                                         welcome_channels)
+};
+
+class WelcomeScreenChannel {
+  public:
+    field<Snowflake> channel_id;
+    field<std::string> description;
+    nullable_field<Snowflake> emoji_id;
+    nullable_field<std::string> emoji_name;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(WelcomeScreenChannel, {}, {},
+                                         channel_id, description, emoji_id,
+                                         emoji_name)
 };
