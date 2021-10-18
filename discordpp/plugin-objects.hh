@@ -25,13 +25,10 @@ inline handleRead objectify(const std::function<void(const bool error, const T t
 }
 
 #define OBJECT_BREAKOUTS
-#include "macros/defineObjectUtil.hh"
 //#define Bot PluginObjects
 /* This space intentionally left blank */
 using Timestamp = std::string;
-
 /* This space intentionally left blank */
-
 #include "categories/application-commands_fwd.hh"
 #include "categories/application_fwd.hh"
 #include "categories/audit-log_fwd.hh"
@@ -76,7 +73,5 @@ using Timestamp = std::string;
 /* This space intentionally left blank */
 #include "categories/receiving-and-responding.hh"
 //#undef Bot
-/* This space intentionally left blank */
-#include "macros/undefineObjectUtil.hh"
 #undef OBJECT_BREAKOUTS
 } // namespace discordpp
