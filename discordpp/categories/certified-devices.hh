@@ -14,3 +14,37 @@
 #endif
 
 #include "../field.hh"
+
+class Device {
+  public:
+    field<DeviceType> type;
+    field<std::string> id;
+    field<Vendor> vendor;
+    field<Model> model;
+    field<std::vector<std::string>> related;
+    omittable_field<bool> echo_cancellation;
+    omittable_field<bool> noise_suppression;
+    omittable_field<bool> automatic_gain_control;
+    omittable_field<bool> hardware_mute;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Device, {}, {}, type, id, vendor,
+                                         model, related, echo_cancellation,
+                                         noise_suppression,
+                                         automatic_gain_control, hardware_mute)
+};
+
+class Vendor {
+  public:
+    field<std::string> name;
+    field<std::string> url;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Vendor, {}, {}, name, url)
+};
+
+class Model {
+  public:
+    field<std::string> name;
+    field<std::string> url;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Model, {}, {}, name, url)
+};

@@ -13,6 +13,6 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using Device = json;
-using Vendor = json;
-using Model = json;
+class Device;
+class Vendor;
+class Model;

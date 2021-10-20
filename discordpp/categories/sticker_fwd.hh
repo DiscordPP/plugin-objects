@@ -13,6 +13,6 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using Sticker = json;
-using StickerItem = json;
-using StickerPack = json;
+class Sticker;
+class StickerItem;
+class StickerPack;

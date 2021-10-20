@@ -14,4 +14,4 @@
 #endif
 
 class User;
-using Connection = json;
+class Connection;

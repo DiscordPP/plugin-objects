@@ -39,3 +39,20 @@ class User {
                                          locale, verified, email, flags,
                                          premium_type, public_flags)
 };
+
+class Connection {
+  public:
+    field<std::string> id;
+    field<std::string> name;
+    field<std::string> type;
+    omittable_field<bool> revoked;
+    omittable_field<std::vector<Integration>> integrations;
+    field<bool> verified;
+    field<bool> friend_sync;
+    field<bool> show_activity;
+    field<int> visibility;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(Connection, {}, {}, id, name, type,
+                                         revoked, integrations, verified,
+                                         friend_sync, show_activity, visibility)
+};

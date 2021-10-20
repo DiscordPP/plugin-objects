@@ -13,6 +13,6 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using Invite = json;
-using InviteMetadata = json;
-using InviteStageInstance = json;
+class Invite;
+class InviteMetadata;
+class InviteStageInstance;

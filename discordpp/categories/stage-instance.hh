@@ -15,4 +15,16 @@
 
 #include "../field.hh"
 
-using StageInstance = json;
+class StageInstance {
+  public:
+    field<Snowflake> id;
+    field<Snowflake> guild_id;
+    field<Snowflake> channel_id;
+    field<std::string> topic;
+    field<int> privacy_level;
+    field<bool> discoverable_disabled;
+
+    NLOHMANN_DEFINE_FIELD_TYPE_INTRUSIVE(StageInstance, {}, {}, id, guild_id,
+                                         channel_id, topic, privacy_level,
+                                         discoverable_disabled)
+};

@@ -13,5 +13,5 @@
 #error This header should only be included in plugin-objects.hh
 #endif
 
-using VoiceState = json;
-using VoiceRegion = json;
+class VoiceState;
+class VoiceRegion;
